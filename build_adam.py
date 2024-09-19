@@ -5,6 +5,7 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense, Dropout
 from sklearn.model_selection import train_test_split
 import joblib
+from backtest import backtest
 
 # Define the function to build the LSTM model
 def build_lstm_model(input_shape):
@@ -24,6 +25,7 @@ def main():
     print("Starting the training process...")
     data = pd.read_csv('data.csv', parse_dates=True, index_col='timestamp')
 
+    
     # Step 1: Feature creation and preprocessing
     data = create_features(data)  # Feature engineering
     data = preprocess_data(data)  # Scaling and encoding categorical features
@@ -65,6 +67,7 @@ def main():
     print(f"Test Accuracy: {test_acc:.2f}")
     # Step 8: Save the model
     model.save('adam.h5')
+    
 
 if __name__ == "__main__":
     main()
