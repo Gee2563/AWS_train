@@ -62,7 +62,7 @@ def train_xgboost_model_with_grid_search(data):
 
         # Perform grid search with cross-validation
         logger.info("Starting GridSearchCV for XGBoost...")
-        grid_search = GridSearchCV(xgb_model, param_grid, cv=3, scoring='accuracy', verbose=1)
+        grid_search = GridSearchCV(xgb_model, param_grid, cv=4, scoring='accuracy', verbose=1)
         grid_search.fit(X_train, y_train)
 
         # Get the best parameters from the grid search
