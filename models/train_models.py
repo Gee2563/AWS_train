@@ -52,7 +52,7 @@ def train_xgboost_model_with_grid_search(data):
 
         # Define the parameter grid for GridSearchCV
         param_grid = {
-            'n_estimators': [50, 100, 200,300],  # Number of trees
+            'n_estimators': [50, 100, 200],  # Number of trees
             'max_depth': [5, 10, 15,20,50],        # Maximum depth of the trees
             'learning_rate': [0.01, 0.05, 0.1],  # Learning rate for boosting
         }
@@ -62,7 +62,7 @@ def train_xgboost_model_with_grid_search(data):
 
         # Perform grid search with cross-validation
         logger.info("Starting GridSearchCV for XGBoost...")
-        grid_search = GridSearchCV(xgb_model, param_grid, cv=4, scoring='accuracy', verbose=1)
+        grid_search = GridSearchCV(xgb_model, param_grid, cv=3, scoring='accuracy', verbose=1)
         grid_search.fit(X_train, y_train)
 
         # Get the best parameters from the grid search
