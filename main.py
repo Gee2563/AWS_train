@@ -8,7 +8,7 @@ def main():
     start = datetime.datetime.now() - datetime.timedelta(days=2)
     end_date = start.strftime('%Y-%m-%d')
     #end date = five years ago today
-    start_date = (start - datetime.timedelta(days=5*365)).strftime('%Y-%m-%d')
+    start_date = (start - datetime.timedelta(days=5*30)).strftime('%Y-%m-%d')
     print(f"Fetching data from {start_date} to {end_date}")
     data = fetch_historical_market_data('binance', 'BTC/USDT', timeframe='1m', start_date=start_date, end_date=end_date)
     train_model(data)
