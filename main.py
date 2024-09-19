@@ -13,4 +13,6 @@ def main():
     train_model(data)
     
    
+if __name__ == "__main__":
+    main()
     
