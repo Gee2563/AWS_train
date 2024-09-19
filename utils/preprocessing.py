@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 
+# Feature creation function
 def create_features(data):
     # Price-based features
     data['price_change'] = data['close'].diff(1)
@@ -54,13 +55,7 @@ def preprocess_data(data):
     
     return data
 
-# Apply the full feature creation and preprocessing pipeline
-data = pd.read_csv('data.csv', parse_dates=True, index_col='timestamp')
-data = create_features(data)
-data = preprocess_data(data)
-
-# Now your data is ready for training a deep learning model
-
+# Create sequences function
 def create_sequences(data, seq_length=10):
     """
     Create sequences for LSTM/GRU models.
@@ -78,3 +73,22 @@ def create_sequences(data, seq_length=10):
         X.append(data.iloc[i:i + seq_length].values)
         y.append(data.iloc[i + seq_length]['target'])  # Assuming target column exists
     return np.array(X), np.array(y)
+
+# Load the data
+data = pd.read_csv('data.csv', parse_dates=True, index_col='timestamp')
+
+# Step 1: Feature creation
+data = create_features(data)
+
+# Step 2: Create a target column (binary classification)
+# 1 if the next closing price is higher than the current one, else 0
+data['target'] = (data['close'].shift(-1) > data['close']).astype(int)
+
+# Step 3: Preprocess the data (scaling, encoding)
+data = preprocess_data(data)
+
+# Step 4: Create sequences for LSTM/GRU
+seq_length = 10  # Number of previous time steps used for prediction
+X, y = create_sequences(data, seq_length=seq_length)
+
+# Now X and y are ready for training the model

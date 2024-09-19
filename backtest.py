@@ -1,6 +1,5 @@
 import pandas as pd
 import joblib
-import keras
 
 def backtest(data, model, initial_balance=10000):
     print("Starting backtest...")
@@ -59,38 +58,3 @@ def backtest(data, model, initial_balance=10000):
     
     # Return trade log and final results
     return trade_log, final_value, profit
-
-def backtest_adam():
-    model = keras.models.load_model('adam.h5')
-    data = pd.read_csv('data.csv')
-    btc_position = 0
-    initial_balance = 10000
-    balance = initial_balance
-    trade_log = []
-
-    for i in range(len(data)):
-        current_price = data['close'].iloc[i]
-        signal = model.predict(data.iloc[i].values.reshape(1, -1))[0][0]
-
-        if signal > 0.5 and btc_position == 0:
-            btc_position = balance / current_price
-            balance = 0
-            trade_log.append((data.index[i], 'BUY', current_price))
-        elif signal <= 0.5 and btc_position > 0:
-            balance = btc_position * current_price
-            btc_position = 0
-            trade_log.append((data.index[i], 'SELL', current_price))
-
-    final_value = balance + (btc_position * data['close'].iloc[-1])
-    profit = final_value - initial_balance
-
-    print(f"Initial Balance: ${initial_balance}")
-    print(f"Final Balance: ${final_value:.2f}")
-    print(f"Total Profit: ${profit:.2f}")
-
-    return trade_log, final_value, profit
-
-
-
-if __name__ == "__main__":
-    backtest_adam()
