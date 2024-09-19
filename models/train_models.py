@@ -1,7 +1,7 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
-from sklearn import metrics
+from sklearn.metrics import accuracy_score, classification_report
 import joblib
 import logging
 from utils.features_engineering import create_features
@@ -15,11 +15,13 @@ def train_model(data):
         logger.info("Preparing data...")
 
         # Create features based on short MAVG, long MAVG, RSI, and MACD
+        print('Features')
         data = create_features(data)
-
+        
         if data.empty:
             logger.warning("No data available after feature creation.")
             return None
+        print('Features created')
 
         logger.info("Feature creation completed.")
 
