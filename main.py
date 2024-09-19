@@ -8,7 +8,7 @@ from utils.load_data import load_data
 def main():
     print("Starting the training process...")
 
-    data = load_data(data.csv)
+    data = load_data("data.csv")
 
     if data.empty:
         # Define the date range (last 5 years)
