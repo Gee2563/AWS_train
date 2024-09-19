@@ -9,7 +9,7 @@ def main():
     start = datetime.datetime.now() - datetime.timedelta(days=2)
     end_date = start.strftime('%Y-%m-%d')
     # Fetch data from five years ago today
-    start_date = (start - datetime.timedelta(days=5*365)).strftime('%Y-%m-%d')
+    start_date = (start - datetime.timedelta(days=5*30)).strftime('%Y-%m-%d')
     print(f"Fetching data from {start_date} to {end_date}")
     
     # Fetch historical data
