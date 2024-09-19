@@ -41,12 +41,11 @@ def backtest(data, model, initial_balance=10000):
         if signal == 1 and btc_position == 0:  # Only buy if no current BTC position
             btc_position = balance / current_price  # Buy BTC with all available balance
             balance = 0
-            trade_log.append(f"Bought {btc_position:.4f} BTC at ${current_price:.2f}")
         
         # Sell Signal (0)
         elif signal == 0 and btc_position > 0:  # Only sell if holding BTC
             balance = btc_position * current_price  # Sell all BTC
-            trade_log.append(f"Sold {btc_position:.4f} BTC at ${current_price:.2f}")
+            
             btc_position = 0
     
     # Final balance (account for any remaining BTC holdings)
