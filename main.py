@@ -1,6 +1,6 @@
 import datetime
 import pandas as pd
-from models.train_models import train_xgboost_model_with_grid_search
+from models.train_models import train_xgboost_model_with_random_search
 from utils.data_utils import fetch_historical_market_data
 from backtest import backtest  # Assuming you have the backtest function
 from utils.load_data import load_data
@@ -22,7 +22,7 @@ def main():
         data = fetch_historical_market_data('binance', 'BTC/USDT', timeframe='1m', start_date=start_date, end_date=end_date)
     
     # Train the XGBoost model with GridSearchCV
-    model = train_xgboost_model_with_grid_search(data)
+    model = train_xgboost_model_with_random_search(data)
 
     if model is not None:
         print("Model trained successfully. Now running backtest...")
