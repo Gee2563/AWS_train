@@ -1,6 +1,6 @@
 import pandas as pd
 from xgboost import XGBClassifier
-from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.model_selection import train_test_split, RandomizedSearchCV
 from sklearn.metrics import accuracy_score, classification_report
 import joblib
 import logging
@@ -12,7 +12,7 @@ from xgboost import plot_importance
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-def train_xgboost_model_with_grid_search(data):
+def train_xgboost_model_with_random_search(data):
     try:
         logger.info("Preparing data...")
 
@@ -50,27 +50,39 @@ def train_xgboost_model_with_grid_search(data):
         # Split the data
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-        # Define the parameter grid for GridSearchCV
+        # Define the parameter grid for RandomizedSearchCV
         param_grid = {
-            'n_estimators': [50, 100,200],  # Number of trees
-            'max_depth': [10, 15,20],        # Maximum depth of the trees
-            'learning_rate': [0.01, 0.05, 0.1],  # Learning rate for boosting
+            'n_estimators': [50, 100, 200, 300],  # Number of trees
+            'max_depth': [5, 10, 15, 20],        # Maximum depth of the trees
+            'learning_rate': [0.01, 0.05, 0.1, 0.2],  # Learning rate for boosting
+            'colsample_bytree': [0.6, 0.8, 1.0],  # Subsample ratio of columns when constructing trees
+            'subsample': [0.6, 0.8, 1.0],        # Subsample ratio of the training instances
         }
 
         # Initialize the XGBoost model
         xgb_model = XGBClassifier(eval_metric='logloss', random_state=42)
 
-        # Perform grid search with cross-validation
-        logger.info("Starting GridSearchCV for XGBoost...")
-        grid_search = GridSearchCV(xgb_model, param_grid, cv=3, scoring='accuracy', verbose=3, n_jobs=-1)
-        grid_search.fit(X_train, y_train)
+        # Perform randomized search with cross-validation
+        logger.info("Starting RandomizedSearchCV for XGBoost...")
+        random_search = RandomizedSearchCV(
+            xgb_model,
+            param_distributions=param_grid,
+            n_iter=20,  # Number of random parameter combinations to sample
+            cv=3,  # 3-fold cross-validation
+            scoring='accuracy',
+            verbose=3,
+            n_jobs=-1,
+            random_state=42
+        )
+        
+        random_search.fit(X_train, y_train)
 
-        # Get the best parameters from the grid search
-        best_params = grid_search.best_params_
-        logger.info(f"Best parameters from Grid Search: {best_params}")
+        # Get the best parameters from the random search
+        best_params = random_search.best_params_
+        logger.info(f"Best parameters from Randomized Search: {best_params}")
 
         # Retrain the model using the best parameters
-        best_model = grid_search.best_estimator_
+        best_model = random_search.best_estimator_
         best_model.fit(X_train, y_train)
 
         logger.info("Model training with best parameters completed.")
@@ -87,8 +99,8 @@ def train_xgboost_model_with_grid_search(data):
         plt.show()
 
         # Save the trained model
-        joblib.dump(best_model, 'xgboost_model_best.pkl')
-        logger.info("Best model saved as xgboost_model_best.pkl")
+        joblib.dump(best_model, 'xgboost_model_best_random.pkl')
+        logger.info("Best model saved as xgboost_model_best_random.pkl")
 
         return best_model
 
